@@ -10,7 +10,7 @@ vy = 0
 G = 9.81  # for gravity
 
 # fluid properties
-P =1  # for density of fluid
+P = 0.95  # for density of fluid
 
 # fluid box properties
 fluid_length = 5
@@ -26,6 +26,26 @@ cd = 0.47  # drag coefficient
 ball_radius = 0.3  # radius of the ball
 h = 0  # height submerged
 V = 0  # for volume displaced
+
+
+# BUTTONS FOR CHANGING THE ORIGINAL DENSITY
+
+def change_to_rubber_density(evt):
+    ...
+
+def change_to_metal_density(evt):
+    ...
+
+def change_to_styrofoam_density(evt):
+    ...
+
+
+
+rubber_ball_button = button(bind=change_to_rubber_density, text="Rubber Density")
+metal_ball_button = button(bind=change_to_metal_density, text="Metal Density")
+
+
+
 
 
 
