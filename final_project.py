@@ -10,7 +10,8 @@ vy = 0
 G = 9.81  # for gravity
 
 # fluid properties
-P = 0.95  # for density of fluid
+# kg / m^3
+P = 997   # for density of fluid
 
 # fluid box properties
 fluid_length = 5
@@ -21,9 +22,9 @@ fluid_y = -2
 fluid_z = 0
 
 # properties of object
-m = 0.05  # mass
 cd = 0.47  # drag coefficient
 ball_radius = 0.3  # radius of the ball
+m =  (1.2 * (1e2 ** 2) / 1e3) * (4 * pi * ball_radius * 3  / 3 ) # mass of the ball, default to rubber density
 h = 0  # height submerged
 V = 0  # for volume displaced
 
@@ -32,24 +33,33 @@ V = 0  # for volume displaced
 # UNITS: kg / m^3
 
 # https://www.suebel.net/About/Materials
-RUBBER_DENSITY = 1.2 * (1e2 ** 2) / 1000
+RUBBER_DENSITY = 1.2 * (1e2 ** 2) / 1e3
 
-STYROFOAM_DENSITY = 0.96
+# https://en.wikipedia.org/wiki/Polystyrene
+STYROFOAM_DENSITY = 1.005 * (1e2 ** 2) / 1e3
 
+# https://www.solitaire-overseas.com/blog/density-of-steel/
+STEEL_DENSITY = 7.85 * (1e2 ** 2) / 1e3
 
 
 def change_to_rubber_density(evt): 
+    global m
     volume = 4 * pi * ball_radius * 3  / 3 
-    return 69
+    m =  RUBBER_DENSITY * volume
+    return evt
 
 
 def change_to_metal_density(evt): 
-    return 69
-
+    global m
+    volume = 4 * pi * ball_radius * 3  / 3 
+    m =  STYROFOAM_DENSITY * volume
+    return evt
 
 def change_to_styrofoam_density(evt): 
-    return 69
-
+    global m
+    volume = 4 * pi * ball_radius * 3  / 3 
+    m = STEEL_DENSITY * volume
+    return evt
 
 canvas(width=600, height=800, resizable=True, visible=True, align="left")
 
