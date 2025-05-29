@@ -29,15 +29,26 @@ V = 0  # for volume displaced
 
 
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
+# UNITS: kg / m^3
+
+# https://www.suebel.net/About/Materials
+RUBBER_DENSITY = 1.2 * (1e2 ** 2) / 1000
+
+STYROFOAM_DENSITY = 0.96
 
 
-def change_to_rubber_density(evt): ...
+
+def change_to_rubber_density(evt): 
+    volume = 4 * pi * ball_radius * 3  / 3 
+    return 69
 
 
-def change_to_metal_density(evt): ...
+def change_to_metal_density(evt): 
+    return 69
 
 
-def change_to_styrofoam_density(evt): ...
+def change_to_styrofoam_density(evt): 
+    return 69
 
 
 canvas(width=600, height=800, resizable=True, visible=True, align="left")
@@ -47,7 +58,7 @@ rubber_ball_button = button(bind=change_to_rubber_density, text="Rubber Density"
 metal_ball_button = button(bind=change_to_metal_density, text="Metal Density")
 styrofoam_ball_button = button(
     bind=change_to_styrofoam_density, text="Styrofoam Density"
-)``
+)
 
 
 y_init = 3
@@ -81,12 +92,10 @@ total_volume = (4 / 3) * pi * pow(ball_radius, 3)
 while yy > fluid_y - fluid_height / 2 + ball_radius:
     rate(1 / dt)
     gravity_force = -m * G
-    buoyant_force = (
-        (P * G * total_volume)
-        if yy <= (fluid_y + fluid_height / 2 + ball_radius)
-        else 0
-    )
-
+    buoyant_force = 0
+    if yy <= (fluid_y + fluid_height / 2 + ball_radius): 
+        buoyant_force =  P * G * total_volume
+    
     fy = gravity_force + buoyant_force  # calculating the force of gravity
     ay = fy / m  # calculating the acceleration of gravity
     vy = vy + ay * dt  # calculating the gradient of velocity
