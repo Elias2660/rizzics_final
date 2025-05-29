@@ -72,6 +72,13 @@ styrofoam_ball_button = button(
 
 
 y_init = 3
+def change_initial_height(evt):
+    y_init = evt.value
+
+height_slider = slider(bind = change_initial_height, min = 0, max = 5, value = y_init)
+
+
+yy = y_init
 yy = y_init
 
 g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Y Position"), align="left")
