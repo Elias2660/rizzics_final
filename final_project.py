@@ -39,12 +39,11 @@ def change_to_metal_density(evt):
 def change_to_styrofoam_density(evt):
     ...
 
+canvas(width=600, height=800, resizable=True, visible=True, align="left")
 
 
 rubber_ball_button = button(bind=change_to_rubber_density, text="Rubber Density")
 metal_ball_button = button(bind=change_to_metal_density, text="Metal Density")
-
-
 
 
 
@@ -59,7 +58,6 @@ g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="l
 vyDots = gdots(color=color.red, graph=g2)
 
 
-canvas(width=600, height=800, resizable=True, visible=True, align="left")
 
 ball = sphere(pos=vector(0, y_init, 0), radius=ball_radius, color=color.red)
 
