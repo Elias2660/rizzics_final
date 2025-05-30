@@ -14,8 +14,8 @@ G = 9.81  # for gravity
 P = 997   # for density of fluid
 
 # fluid box properties
-fluid_length = 5
-fluid_height = 3
+fluid_length = 8
+fluid_height = 7
 fluid_width = 2
 fluid_x = 0
 fluid_y = -2
@@ -23,8 +23,8 @@ fluid_z = 0
 
 # properties of object
 cd = 0.47  # drag coefficient
-ball_radius = 0.3  # radius of the ball
-m =  (1.2 * (1e2 ** 2) / 1e3) * (4 * pi * ball_radius * 3  / 3 ) # mass of the ball, default to rubber density
+ball_radius = 0.05  # radius of the ball (meters)
+m =  (0.91 * (1e2 ** 3) / 1e3) * (4 * pi * (ball_radius ** 3)  / 3 ) # mass of the ball, default to rubber density
 h = 0  # height submerged
 V = 0  # for volume displaced
 
@@ -33,31 +33,36 @@ V = 0  # for volume displaced
 # UNITS: kg / m^3
 
 # https://www.suebel.net/About/Materials
-RUBBER_DENSITY = 1.2 * (1e2 ** 2) / 1e3
+# shrug emojii
+# https://www.ck12.org/flexi/physical-science/buoyancy/a-rubber-ball-floats-on-water-with-one-third-of-its-volume-outside-the-water-what-is-the-density-of-the-rubber/
+RUBBER_DENSITY = 0.6 * (1e2 ** 3) / 1e3
+
+# https://www.engineeringtoolbox.com/ice-thermal-properties-d_576.html
+ICE_DENSITY = 0.91 * (1e2 ** 3) / 1e3
 
 # https://en.wikipedia.org/wiki/Polystyrene
-STYROFOAM_DENSITY = 1.005 * (1e2 ** 2) / 1e3
+# https://www.aqua-calc.com/page/density-table/substance/styrofoam
+STYROFOAM_DENSITY =  0.05 * (1e2 ** 3) / 1e3
 
 # https://www.solitaire-overseas.com/blog/density-of-steel/
-STEEL_DENSITY = 7.85 * (1e2 ** 2) / 1e3
+STEEL_DENSITY = 7.85 * (1e2 ** 3) / 1e3
 
 
 def change_to_rubber_density(evt): 
     global m
-    volume = 4 * pi * ball_radius * 3  / 3 
+    volume = 4 * pi * (ball_radius ** 3)  / 3 
     m =  RUBBER_DENSITY * volume
     return evt
 
-
 def change_to_metal_density(evt): 
     global m
-    volume = 4 * pi * ball_radius * 3  / 3 
+    volume = 4 * pi * (ball_radius ** 3 ) / 3 
     m =  STYROFOAM_DENSITY * volume
     return evt
 
 def change_to_styrofoam_density(evt): 
     global m
-    volume = 4 * pi * ball_radius * 3  / 3 
+    volume = 4 * pi * (ball_radius ** 3)  / 3 
     m = STEEL_DENSITY * volume
     return evt
 
@@ -71,7 +76,7 @@ styrofoam_ball_button = button(
 )
 
 
-y_init = 3
+y_init = 2
 def change_initial_height(evt):
     y_init = evt.value
 
@@ -103,16 +108,27 @@ scene.camera.pos = vector(
 )  # This tells VPython to view the scene from the position (0,5,10)
 
 
-total_volume = (4 / 3) * pi * pow(ball_radius, 3)
 
 # while yy > -3.65:
 while yy > fluid_y - fluid_height / 2 + ball_radius:
     rate(1 / dt)
     gravity_force = -m * G
-    buoyant_force = 0
-    if yy <= (fluid_y + fluid_height / 2 + ball_radius): 
-        buoyant_force =  P * G * total_volume
+
+    height_submerged = 0
+    if yy - ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
+        # the ball is above the water
+        height_submerged = 0
+    elif yy + ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
+        # the ball is somewhat submerged
+        height_submerged = (fluid_y + fluid_height / 2 + ball_radius) - (yy - ball_radius)
+    else:
+        # the ball is fully submerged
+        height_submerged = 2 * ball_radius
     
+    buoyant_force =  (1 / 3) * pi * P * G * (height_submerged ** 2) * (3 * ball_radius - height_submerged)
+    
+    print(f"Gravitational Force: {gravity_force}; Buoyant Force {buoyant_force}")
+
     fy = gravity_force + buoyant_force  # calculating the force of gravity
     ay = fy / m  # calculating the acceleration of gravity
     vy = vy + ay * dt  # calculating the gradient of velocity
