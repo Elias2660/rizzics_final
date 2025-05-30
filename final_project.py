@@ -8,6 +8,8 @@ vy = 0
 
 # world properties
 G = 9.81  # for gravity
+BALL_SCALING_FACTOR = 5
+started = False
 
 # fluid properties
 # kg / m^3
@@ -30,10 +32,10 @@ V = 0  # for volume displaced
 
 
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
-# UNITS: kg / m^3
 
+# UNITS: kg / m^3
 # https://www.suebel.net/About/Materials
-# shrug emojii
+# shrug emoji
 # https://www.ck12.org/flexi/physical-science/buoyancy/a-rubber-ball-floats-on-water-with-one-third-of-its-volume-outside-the-water-what-is-the-density-of-the-rubber/
 RUBBER_DENSITY = 0.6 * (1e2 ** 3) / 1e3
 
@@ -76,15 +78,59 @@ styrofoam_ball_button = button(
 )
 
 
+# START/PAUSE/PLAY BUTTON
+start_button, pause_play_button = None, None
+def start(evt):
+    global started, start_button, pause_play_button, height_slider
+    started = True
+    # removing presetting stuff
+    start_button.delete()
+    height_slider.disabled=True
+    pause_play_button.disabled = False
+    return evt
+
+def toggle(evt):
+    global pause_play_button, started
+    if not pause_play_button.disabled:
+        # mostly a meaningless check but still let's roll with it
+        if not started:
+            pause_play_button.text = "Pause"
+            started = True
+        else:
+            pause_play_button.text = "Play"
+            started = False
+    return evt
+
+start_button = button(bind=start, text="Start Simulation")
+pause_play_button = button(bind=toggle, text="Pause", disabled = True)
+
+
+
+# INITIAL HEIGHT + POSITION
+
 y_init = 2
+
+scene.camera.pos = vector(
+    0, y_init / 2, 2
+)  # This tells VPython to view the scene from the position (0,5,10)
+
+
+slider_yy = y_init
+yy = y_init
+
+pos_text = None
+height_slider = None
+
 def change_initial_height(evt):
-    y_init = evt.value
+    global slider_yy, pos_text, height_slider
 
-height_slider = slider(bind = change_initial_height, min = 0, max = 5, value = y_init)
+    slider_yy = evt.value
+    pos_text.text = "Initial Height: " + str(height_slider.value)
 
 
-yy = y_init
-yy = y_init
+height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init)
+pos_text = wtext(text=f"Initial Height: {y_init}")
+
 
 g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Y Position"), align="left")
 yyDots = gdots(color=color.green, graph=g1)
@@ -93,9 +139,9 @@ g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="l
 vyDots = gdots(color=color.red, graph=g2)
 
 
-ball = sphere(pos=vector(0, y_init, 0), radius=ball_radius, color=color.red)
+ball = sphere(pos=vector(0, y_init, 0), radius=ball_radius * BALL_SCALING_FACTOR, color=color.red)
 
-box(
+water = box(
     pos=vector(fluid_x, fluid_y, fluid_z),
     size=vector(fluid_length, fluid_height, fluid_width),
     color=vector(0, 0, 1),
@@ -103,40 +149,37 @@ box(
 )
 
 
-scene.camera.pos = vector(
-    0, y_init / 2, 2
-)  # This tells VPython to view the scene from the position (0,5,10)
-
-
-
 # while yy > -3.65:
 while yy > fluid_y - fluid_height / 2 + ball_radius:
     rate(1 / dt)
-    gravity_force = -m * G
 
-    height_submerged = 0
-    if yy - ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
-        # the ball is above the water
-        height_submerged = 0
-    elif yy + ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
-        # the ball is somewhat submerged
-        height_submerged = (fluid_y + fluid_height / 2 + ball_radius) - (yy - ball_radius)
+    if not started:
+        ball.pos = vector(0, slider_yy, 0)
+        yy = slider_yy
     else:
-        # the ball is fully submerged
-        height_submerged = 2 * ball_radius
-    
-    buoyant_force =  (1 / 3) * pi * P * G * (height_submerged ** 2) * (3 * ball_radius - height_submerged)
-    
-    print(f"Gravitational Force: {gravity_force}; Buoyant Force {buoyant_force}")
+        gravity_force = -m * G
 
-    fy = gravity_force + buoyant_force  # calculating the force of gravity
-    ay = fy / m  # calculating the acceleration of gravity
-    vy = vy + ay * dt  # calculating the gradient of velocity
-    yy = yy + vy * dt  # calculating the change in position
+        height_submerged = 0
+        if yy - ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
+            # the ball is above the water
+            height_submerged = 0
+        elif yy + ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
+            # the ball is somewhat submerged
+            height_submerged = (fluid_y + fluid_height / 2 + ball_radius) - (yy - ball_radius)
+        else:
+            # the ball is fully submerged
+            height_submerged = 2 * ball_radius
+        
+        buoyant_force =  (1 / 3) * pi * P * G * (height_submerged ** 2) * (3 * ball_radius - height_submerged)
 
-    ball.pos = vector(0, yy, 0)
+        fy = gravity_force + buoyant_force  # calculating the force of gravity
+        ay = fy / m  # calculating the acceleration of gravity
+        vy = vy + ay * dt  # calculating the gradient of velocity
+        yy = yy + vy * dt  # calculating the change in position
 
-    yyDots.plot(t, yy)
-    vyDots.plot(t, vy)
+        ball.pos = vector(0, yy, 0)
 
-    t = t + dt
+        yyDots.plot(t, yy)
+        vyDots.plot(t, vy)
+
+        t = t + dt
