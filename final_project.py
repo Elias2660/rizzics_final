@@ -46,7 +46,7 @@ def start(evt):
     global started, start_button, pause_play_button, height_slider
     started = True
     # removing presetting stuff
-    start_button.delete()
+    start_button.disabled=True
     height_slider.disabled=True
     pause_play_button.disabled = False
     return evt
@@ -63,10 +63,21 @@ def toggle(evt):
             started = False
     return evt
 
+def reset(evt):
+    global yy, vy, start_button, pause_play_button, height_slider
+    yy = y_init
+    vy = 0
+    start_button.disabled = False
+    pause_play_button.text = "Play"
+    pause_play_button.disabled = True
+    height_slider.disabled = False
+    return evt
+
+
 
 start_button = button(bind=start, text="Start Simulation")
 pause_play_button = button(bind=toggle, text="Pause", disabled = True)
-
+reset_button = button(bind=toggle, text = "Reset")
 
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
 
