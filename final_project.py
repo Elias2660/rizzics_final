@@ -43,12 +43,13 @@ V = 0  # for volume displaced
 scene.append_to_caption("Global Controls\n")
 start_button, pause_play_button = None, None
 def start(evt):
-    global started, start_button, pause_play_button, height_slider
+    global started, start_button, pause_play_button, height_slider, start_button
     started = True
     # removing presetting stuff
     start_button.disabled=True
     height_slider.disabled=True
     pause_play_button.disabled = False
+    reset_button.disabled = False
     return evt
 
 def toggle(evt):
@@ -64,20 +65,28 @@ def toggle(evt):
     return evt
 
 def reset(evt):
-    global yy, vy, start_button, pause_play_button, height_slider
+    global yy, vy, start_button, pause_play_button, height_slider, started, t, g1, g2, vyDots, yyDots
     yy = y_init
+    t = 0
     vy = 0
+    started = False
     start_button.disabled = False
-    pause_play_button.text = "Play"
+    pause_play_button.text = "Pause"
     pause_play_button.disabled = True
     height_slider.disabled = False
+
+    # clear graphs
+    vyDots.delete()
+    yyDots.delete()
+
+
     return evt
 
 
 
 start_button = button(bind=start, text="Start Simulation")
 pause_play_button = button(bind=toggle, text="Pause", disabled = True)
-reset_button = button(bind=toggle, text = "Reset")
+reset_button = button(bind=reset, text = "Reset", disabled = True)
 
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
 
@@ -175,9 +184,11 @@ while True:
     if (yy < fluid_y - fluid_height / 2 + ball_radius):
         yy = fluid_y - fluid_height / 2 + ball_radius
         vy = 0
-    if not started:
+    if not started and t == 0 :
         ball.pos = vector(0, slider_yy, 0)
         yy = slider_yy
+    elif not started:
+        ...
     else:
         gravity_force = -m * G
 
