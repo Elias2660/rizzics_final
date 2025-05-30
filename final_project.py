@@ -2,7 +2,7 @@ from vpython import *
 
 # changing properties
 t = 0.00
-dt = 0.0001
+dt = 0.0005
 vy = 0
 
 
@@ -25,7 +25,7 @@ fluid_length = 8
 fluid_height = 7
 fluid_width = 2
 fluid_x = 0
-fluid_y = -2
+fluid_y = -4
 fluid_z = 0
 
 # properties of object
@@ -114,7 +114,7 @@ pause_play_button = button(bind=toggle, text="Pause", disabled = True)
 y_init = 2
 
 scene.camera.pos = vector(
-    0, y_init / 2, 2
+    0, y_init / 2, 13
 )  # This tells VPython to view the scene from the position (0,5,10)
 
 
@@ -153,8 +153,12 @@ water = box(
 
 
 # while yy > -3.65:
-while yy > fluid_y - fluid_height / 2 + ball_radius:
+# while yy > fluid_y - fluid_height / 2 + ball_radius:
+while True:
     rate(1 / dt)
+
+    if (yy < fluid_y - fluid_height / 2 + ball_radius):
+        yy = fluid_y - fluid_height / 2 + ball_radius
 
     if not started:
         ball.pos = vector(0, slider_yy, 0)
