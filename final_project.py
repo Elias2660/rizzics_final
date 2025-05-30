@@ -10,6 +10,11 @@ vy = 0
 G = 9.81  # for gravity
 BALL_SCALING_FACTOR = 5
 started = False
+scene.width = 400
+scene.range = 1.3
+scene.height = 800
+
+scene.title = "Fluid Simulation"
 
 # fluid properties
 # kg / m^3
@@ -29,6 +34,7 @@ ball_radius = 0.05  # radius of the ball (meters)
 m =  (0.91 * (1e2 ** 3) / 1e3) * (4 * pi * (ball_radius ** 3)  / 3 ) # mass of the ball, default to rubber density
 h = 0  # height submerged
 V = 0  # for volume displaced
+
 
 
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
@@ -67,9 +73,6 @@ def change_to_styrofoam_density(evt):
     volume = 4 * pi * (ball_radius ** 3)  / 3 
     m = STEEL_DENSITY * volume
     return evt
-
-canvas(width=600, height=800, resizable=True, visible=True, align="left")
-
 
 rubber_ball_button = button(bind=change_to_rubber_density, text="Rubber Density")
 metal_ball_button = button(bind=change_to_metal_density, text="Metal Density")
@@ -128,7 +131,7 @@ def change_initial_height(evt):
     pos_text.text = "Initial Height: " + str(height_slider.value)
 
 
-height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init)
+height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init, pos=scene.title_anchor)
 pos_text = wtext(text=f"Initial Height: {y_init}")
 
 
