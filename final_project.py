@@ -4,6 +4,8 @@ from vpython import *
 t = 0.00
 dt = 0.0005
 vy = 0
+vx = 0
+xx = 0
 
 
 # world properties
@@ -206,20 +208,30 @@ while True:
         
         buoyant_force =  (1 / 3) * pi * P * G * (height_submerged ** 2) * (3 * ball_radius - height_submerged)
 
-        resistive_force = (1 / 2) * cd * P * (vy ** 2) * (((ball_radius ** 2) - ((ball_radius - height_submerged) ** 2)) **(1/2))
-       
-        if vy > 0:
-            resistive_force *= -1
+        resistive_force_y = (1 / 2) * cd * P * (vy ** 2) * (((ball_radius ** 2) - ((ball_radius - height_submerged) ** 2)) **(1/2))
+        resistive_force_x = (1 / 2) * cd * P * (vx ** 2) * (((ball_radius ** 2) - ((ball_radius - height_submerged) ** 2)) **(1/2))
 
-        fy = gravity_force + buoyant_force + resistive_force  
+        if vy > 0:
+            resistive_force_y *= -1
+        if vx > 0:
+            resistive_force_x *= -1
+
+        fy = gravity_force + buoyant_force + resistive_force_y  
         ay = fy / m  # calculating the acceleration of gravity
         vy = vy + ay * dt  # calculating the gradient of velocity
         yy = yy + vy * dt  # calculating the change in position
+        
+        fx = resistive_force_x
+        ax = fx / m # calculating the x-component acceleration
+        vx = vx + ax * dt # calculating the x-component velocity
+        xx = xx + vx * dt # calculating the x-component position
+
         yyDots.plot(t, yy)
         vyDots.plot(t, vy)
+
         t = t + dt  
 
     # Plot the ball no matter what
-    ball.pos = vector(0, yy, 0)
+    ball.pos = vector(xx, yy, 0)
 
 
