@@ -13,6 +13,8 @@ started = False
 scene.width = 400
 scene.range = 1.3
 scene.height = 800
+scene.align = "left"
+scene.caption=""
 
 scene.title = "Fluid Simulation"
 
@@ -35,6 +37,35 @@ m =  (0.91 * (1e2 ** 3) / 1e3) * (4 * pi * (ball_radius ** 3)  / 3 ) # mass of t
 h = 0  # height submerged
 V = 0  # for volume displaced
 
+
+# START/PAUSE/PLAY BUTTON
+
+scene.append_to_caption("Global Controls\n")
+start_button, pause_play_button = None, None
+def start(evt):
+    global started, start_button, pause_play_button, height_slider
+    started = True
+    # removing presetting stuff
+    start_button.delete()
+    height_slider.disabled=True
+    pause_play_button.disabled = False
+    return evt
+
+def toggle(evt):
+    global pause_play_button, started
+    if not pause_play_button.disabled:
+        # mostly a meaningless check but still let's roll with it
+        if not started:
+            pause_play_button.text = "Pause"
+            started = True
+        else:
+            pause_play_button.text = "Play"
+            started = False
+    return evt
+
+
+start_button = button(bind=start, text="Start Simulation")
+pause_play_button = button(bind=toggle, text="Pause", disabled = True)
 
 
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
@@ -74,38 +105,12 @@ def change_to_styrofoam_density(evt):
     m = STEEL_DENSITY * volume
     return evt
 
+scene.append_to_caption("\nDensity Presets \n")
 rubber_ball_button = button(bind=change_to_rubber_density, text="Rubber Density")
 metal_ball_button = button(bind=change_to_metal_density, text="Metal Density")
 styrofoam_ball_button = button(
     bind=change_to_styrofoam_density, text="Styrofoam Density"
 )
-
-
-# START/PAUSE/PLAY BUTTON
-start_button, pause_play_button = None, None
-def start(evt):
-    global started, start_button, pause_play_button, height_slider
-    started = True
-    # removing presetting stuff
-    start_button.delete()
-    height_slider.disabled=True
-    pause_play_button.disabled = False
-    return evt
-
-def toggle(evt):
-    global pause_play_button, started
-    if not pause_play_button.disabled:
-        # mostly a meaningless check but still let's roll with it
-        if not started:
-            pause_play_button.text = "Pause"
-            started = True
-        else:
-            pause_play_button.text = "Play"
-            started = False
-    return evt
-
-start_button = button(bind=start, text="Start Simulation")
-pause_play_button = button(bind=toggle, text="Pause", disabled = True)
 
 
 
@@ -129,11 +134,12 @@ def change_initial_height(evt):
 
     slider_yy = evt.value
     pos_text.text = "Initial Height: " + str(height_slider.value)
-
-
+scene.append_to_caption("\nChange Initial Height\n")
 height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init)
 pos_text = wtext(text=f"Initial Height: {y_init}")
 
+
+scene.append_to_caption("\n\n Graphs\n")
 
 g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Y Position"), align="left")
 yyDots = gdots(color=color.green, graph=g1)
@@ -157,7 +163,7 @@ while True:
 
     if (yy < fluid_y - fluid_height / 2 + ball_radius):
         yy = fluid_y - fluid_height / 2 + ball_radius
-
+        vy = 0
     if not started:
         ball.pos = vector(0, slider_yy, 0)
         yy = slider_yy
