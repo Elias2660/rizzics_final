@@ -131,7 +131,7 @@ def change_initial_height(evt):
     pos_text.text = "Initial Height: " + str(height_slider.value)
 
 
-height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init, pos=scene.title_anchor)
+height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init)
 pos_text = wtext(text=f"Initial Height: {y_init}")
 
 
@@ -152,8 +152,6 @@ water = box(
 )
 
 
-# while yy > -3.65:
-# while yy > fluid_y - fluid_height / 2 + ball_radius:
 while True:
     rate(1 / dt)
 
