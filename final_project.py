@@ -65,8 +65,9 @@ def toggle(evt):
     return evt
 
 def reset(evt):
-    global yy, vy, start_button, pause_play_button, height_slider, started, t, g1, g2, vyDots, yyDots
-    yy = y_init
+    global yy, vy, start_button, pause_play_button, height_slider, started, t, g1, g2, vyDots, yyDots, height_slider, y_init
+    yy = height_slider.value
+    y_init = height_slider.value
     t = 0
     vy = 0
     started = False
@@ -143,15 +144,15 @@ scene.camera.pos = vector(
 )  # This tells VPython to view the scene from the position (0,5,10)
 
 
-slider_yy = y_init
 yy = y_init
 
 pos_text = None
 height_slider = None
 
 def change_initial_height(evt):
-    global slider_yy, pos_text, height_slider
-    slider_yy = evt.value
+    global pos_text, height_slider, y_init
+    height_slider.value = evt.value
+    y_init  = height_slider.value
     pos_text.text = "Initial Height: " + str(height_slider.value)
 scene.append_to_caption("\nChange Initial Height\n")
 height_slider = slider(bind=change_initial_height, min=0, max=15, value=y_init)
@@ -184,8 +185,9 @@ while True:
         yy = fluid_y - fluid_height / 2 + ball_radius
         vy = 0
     if not started and t == 0 :
-        ball.pos = vector(0, slider_yy, 0)
-        yy = slider_yy
+        ball.pos = vector(0, height_slider.value, 0)
+        yy = height_slider.value
+        y_init = height_slider.value
     elif not started:
         ...
     else:
