@@ -24,7 +24,7 @@ P = 997   # for density of fluid
 
 # fluid box properties
 fluid_length = 8
-fluid_height = 7
+fluid_height = 10
 fluid_width = 2
 fluid_x = 0
 fluid_y = -4
@@ -151,21 +151,20 @@ height_slider = None
 
 def change_initial_height(evt):
     global slider_yy, pos_text, height_slider
-
     slider_yy = evt.value
     pos_text.text = "Initial Height: " + str(height_slider.value)
 scene.append_to_caption("\nChange Initial Height\n")
-height_slider = slider(bind=change_initial_height, min=0, max=5, value=y_init)
+height_slider = slider(bind=change_initial_height, min=0, max=15, value=y_init)
 pos_text = wtext(text=f"Initial Height: {y_init}")
 
 
 scene.append_to_caption("\n\n Graphs\n")
 
 g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Y Position"), align="left")
-yyDots = gdots(color=color.green, graph=g1)
+yyDots = gcurve(color=color.green, graph=g1)
 
 g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="left")
-vyDots = gdots(color=color.red, graph=g2)
+vyDots = gcurve(color=color.red, graph=g2)
 
 
 ball = sphere(pos=vector(0, y_init, 0), radius=ball_radius * BALL_SCALING_FACTOR, color=color.red)
@@ -205,14 +204,20 @@ while True:
         
         buoyant_force =  (1 / 3) * pi * P * G * (height_submerged ** 2) * (3 * ball_radius - height_submerged)
 
-        fy = gravity_force + buoyant_force  # calculating the force of gravity
+        resistive_force = (1 / 2) * cd * P * (vy ** 2) * (((ball_radius ** 2) - ((ball_radius - height_submerged) ** 2)) **(1/2))
+       
+        if vy > 0:
+            resistive_force *= -1
+
+        fy = gravity_force + buoyant_force + resistive_force  
         ay = fy / m  # calculating the acceleration of gravity
         vy = vy + ay * dt  # calculating the gradient of velocity
         yy = yy + vy * dt  # calculating the change in position
-
-        ball.pos = vector(0, yy, 0)
-
         yyDots.plot(t, yy)
         vyDots.plot(t, vy)
+        t = t + dt  
 
-        t = t + dt
+    # Plot the ball no matter what
+    ball.pos = vector(0, yy, 0)
+
+
