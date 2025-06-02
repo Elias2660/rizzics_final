@@ -303,7 +303,8 @@ g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Y Position"), align=
 yyDots = gcurve(color=color.green, graph=g1)
 
 g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="left")
-vyDots = gcurve(color=color.red, graph=g2)
+vyDots = gcurve(color=color.red, graph=g2, legend = True)
+vxDots = gcurve(color=color.blue, graph=g2, legend = True)
 
 
 ball = sphere(
@@ -379,6 +380,7 @@ while True:
 
         yyDots.plot(t, yy)
         vyDots.plot(t, vy)
+        vxDots.plot(t, vx)
 
         t = t + dt
 
