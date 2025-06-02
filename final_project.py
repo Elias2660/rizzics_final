@@ -34,7 +34,7 @@ fluid_z = 0
 
 # properties of object
 cd = 0.47  # drag coefficient
-ball_radius = 0.05  # radius of the ball (meters)
+ball_radius = 0.05  # radius of the ball (meters), should be ball_radius_init
 m = (0.91 * (1e2**3) / 1e3) * (
     4 * pi * (ball_radius**3) / 3
 )  # mass of the ball, default to rubber density
@@ -214,6 +214,19 @@ def change_initial_vx(evt):
 scene.append_to_caption("\nChange Initial x Velocity\n")
 vx_slider = slider(bind=change_initial_vx, min=-5, max=5, value=vx_init)
 vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
+
+# ball_radius = ball_radius_init # change ball_radius variable above to ball_radius_init
+
+#def change_radius(evt):
+#    global r_slider, r_slider_text, ball_radius, ball_radius_init
+#    r_slider.value = evt.value
+#    ball_radius = r_slider.value
+#    r_slider_text.text = f"Radius: {r_slider.value}"
+#    return evt
+
+#scene.append_to_caption("\nChange Radius\n")
+#r_slider = slider(bind = change_radius, min = 0, max = 2, value = ball_radius)
+#r_slider_text = wtext(text=f"Radius: {ball_radius}")
 
 
 scene.append_to_caption("\n\n Graphs\n")
