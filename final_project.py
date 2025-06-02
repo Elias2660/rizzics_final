@@ -84,8 +84,9 @@ def toggle(evt):
 
 def reset(evt):
     global yy, vy, vx, start_button, vx_slider
-    global pause_play_button, height_slider, started, t, g1, g2, vyDots, yyDots, height_slider, xx, vx
+    global pause_play_button, height_slider, started, t, g1, g2, height_slider, xx, vx
     global rubber_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button, density_slider
+    global vyDots, yyDots, vxDots, xxDots
     yy = height_slider.value
     t = 0
     vy = 0
@@ -120,7 +121,8 @@ def reset(evt):
     # clear graphs
     vyDots.delete()
     yyDots.delete()
-
+    vxDots.delete()
+    xxDots.delete()
     return evt
 
 
@@ -299,12 +301,14 @@ vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
 
 scene.append_to_caption("\n\n Graphs\n")
 
-g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Y Position"), align="left")
-yyDots = gcurve(color=color.green, graph=g1)
+g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Position"), align="left")
+xxDots = gcurve(color=color.magenta, graph=g1, label = "X Position")
+yyDots = gcurve(color=color.green, graph=g1, label="Y Position")
+
 
 g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="left")
-vyDots = gcurve(color=color.red, graph=g2, legend = True)
-vxDots = gcurve(color=color.blue, graph=g2, legend = True)
+vxDots = gcurve(color=color.blue, graph=g2, legend = True, label = "X Velocity")
+vyDots = gcurve(color=color.red, graph=g2, legend = True, label="Y Velocity")
 
 
 ball = sphere(
@@ -379,6 +383,7 @@ while True:
         xx = xx + vx * dt  # calculating the x-component position
 
         yyDots.plot(t, yy)
+        xxDots.plot(t, xx)
         vyDots.plot(t, vy)
         vxDots.plot(t, vx)
 
