@@ -247,8 +247,8 @@ while True:
     if not started and t == 0:
         ball.pos = vector(0, height_slider.value, 0)
         yy = height_slider.value
-    elif not started:
-        ...
+    #elif not started:
+      #  ...
     else:
         gravity_force = -m * G
 
@@ -273,21 +273,13 @@ while True:
             * (height_submerged**2)
             * (3 * ball_radius - height_submerged)
         )
-
-        resistive_force_y = (
-            (1 / 2)
-            * cd
-            * P
-            * (vy**2)
-            * (((ball_radius**2) - ((ball_radius - height_submerged) ** 2)) ** (1 / 2))
-        )
-        resistive_force_x = (
-            (1 / 2)
-            * cd
-            * P
-            * (vx**2)
-            * (((ball_radius**2) - ((ball_radius - height_submerged) ** 2)) ** (1 / 2))
-        )
+        
+        difference = ball_radius - height_submerged
+        
+        resistive_force_y = (1 / 2) * cd * P * (vy ** 2) * sqrt((((ball_radius ** 2) - (difference ** 2))))
+       
+        resistive_force_x = (1 / 2) * cd * P * (vx ** 2) * sqrt((((ball_radius ** 2) - (difference ** 2))))
+        
 
         if vy > 0:
             resistive_force_y *= -1
