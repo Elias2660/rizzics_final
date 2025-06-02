@@ -241,11 +241,12 @@ ice_ball_button = button(bind=change_to_ice_density, text="Ice Density", disable
 
 def change_density(evt):
     global density_slider, density_slider_text, ball_mass, rubber_ball_button, metal_ball_button
-    global styrofoam_ball_button, ice_ball_button
+    global styrofoam_ball_button, ice_ball_button, ball_mass
 
     # if the slider is used, reenable buttons that don't equal slider value
     density_slider.value = evt.value
     density_slider_text.text = f"Density: {density_slider.value} (kg / m^3)"
+    ball_mass = evt.value *  4 * pi * (ball_radius**3) / 3
 
     #  update buttons so stuff doesn't become too confusing
     if density_slider.value != ICE_DENSITY:
