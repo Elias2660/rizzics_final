@@ -84,9 +84,9 @@ def toggle(evt):
 
 def reset(evt):
     global yy, vy, vx, start_button, vx_slider
-    global pause_play_button, height_slider, started, t, g1, g2, height_slider, xx, vx
+    global pause_play_button, height_slider, started, t, height_slider, xx, vx
     global rubber_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button, density_slider
-    global vyDots, yyDots, vxDots, xxDots
+    global vyDots, yyDots, vxDots, xxDots, axDots, ayDots, bfDots, dxDots, dyDots
     yy = height_slider.value
     t = 0
     vy = 0
@@ -100,6 +100,7 @@ def reset(evt):
     vx_slider.disabled = False
     reset_button.disabled = True
 
+    # update buttons regarding density
     density_slider.disabled = False
 
     density = (ball_mass / ((4 / 3) * pi * (ball_radius**3))) 
@@ -123,6 +124,11 @@ def reset(evt):
     yyDots.delete()
     vxDots.delete()
     xxDots.delete()
+    axDots.delete()
+    ayDots.delete()
+    bfDots.delete()
+    dxDots.delete()
+    dyDots.delete()
     return evt
 
 
@@ -152,12 +158,16 @@ STEEL_DENSITY = 7.85 * (1e2**3) / 1e3
 def change_to_rubber_density(evt):
     global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
     global density_slider, density_slider_text
+
+    # change the other values of the buttons to feel more seamless
     density_slider.value = RUBBER_DENSITY
     density_slider_text.text = f"Density: {RUBBER_DENSITY} (kg / m^3)"
     rubber_ball_button.disabled = True
     metal_ball_button.disabled = False
     styrofoam_ball_button.disabled = False
     ice_ball_button.disabled = False
+
+    # actually update mass
     volume = 4 * pi * (ball_radius**3) / 3
     ball_mass = RUBBER_DENSITY * volume
     return evt
@@ -166,12 +176,16 @@ def change_to_rubber_density(evt):
 def change_to_metal_density(evt):
     global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
     global density_slider, density_slider_text
+
+    # change the other values of the buttons to feel more seamless
     density_slider.value = STEEL_DENSITY
     density_slider_text.text = f"Density: {STEEL_DENSITY} (kg / m^3)"
     rubber_ball_button.disabled = False
     metal_ball_button.disabled = True
     styrofoam_ball_button.disabled = False
     ice_ball_button.disabled = False
+
+    # actually update mass
     volume = 4 * pi * (ball_radius**3) / 3
     ball_mass = STEEL_DENSITY * volume
     return evt
@@ -180,12 +194,16 @@ def change_to_metal_density(evt):
 def change_to_styrofoam_density(evt):
     global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
     global density_slider, density_slider_text
+
+    # change the other values of the buttons to feel more seamless
     density_slider.value = STYROFOAM_DENSITY
     density_slider_text.text = f"Density: {STYROFOAM_DENSITY} (kg / m^3)"
     rubber_ball_button.disabled = False
     metal_ball_button.disabled = False
     styrofoam_ball_button.disabled = True
     ice_ball_button.disabled = False
+
+    # actually update mass
     volume = 4 * pi * (ball_radius**3) / 3
     ball_mass = ICE_DENSITY * volume
     return evt
@@ -194,11 +212,20 @@ def change_to_styrofoam_density(evt):
 def change_to_ice_density(evt):
     global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
     global density_slider, density_slider_text
+
+    # change the other values of the buttons to feel more seamless
     density_slider.value = ICE_DENSITY
     density_slider_text.text = f"Density: {ICE_DENSITY} (kg / m^3)"
+    rubber_ball_button.disabled = False
+    metal_ball_button.disabled = False
+    styrofoam_ball_button.disabled = False
+    ice_ball_button.disabled = True
+    
+    # actually update mass
     volume = 4 * pi * (ball_radius**3) / 3
     ball_mass = ICE_DENSITY * volume
     return evt
+
 
 
 scene.append_to_caption("\n Updating Density \n")
@@ -219,6 +246,8 @@ def change_density(evt):
     # if the slider is used, reenable buttons that don't equal slider value
     density_slider.value = evt.value
     density_slider_text.text = f"Density: {density_slider.value} (kg / m^3)"
+
+    #  update buttons so stuff doesn't become too confusing
     if density_slider.value != ICE_DENSITY:
         ice_ball_button.disabled = False
     else:
@@ -258,8 +287,9 @@ yy = y_init
 
 
 def change_initial_height(evt):
-    global pos_text, height_slider
+    global pos_text, height_slider, yy
     height_slider.value = evt.value
+    yy = height_slider.value
     pos_text.text = f"Initial Height: {height_slider.value}"
     return evt
 
@@ -299,7 +329,7 @@ vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
 # r_slider_text = wtext(text=f"Radius: {ball_radius}")
 
 
-scene.append_to_caption("\n\n Graphs\n")
+scene.append_to_caption("\n\n\n\n Graphs\n\n\n")
 
 g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Position"), align="left")
 xxDots = gcurve(color=color.magenta, graph=g1, label = "X Position")
@@ -309,6 +339,18 @@ yyDots = gcurve(color=color.green, graph=g1, label="Y Position")
 g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="left")
 vxDots = gcurve(color=color.blue, graph=g2, legend = True, label = "X Velocity")
 vyDots = gcurve(color=color.red, graph=g2, legend = True, label="Y Velocity")
+
+g3 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Acceleration"), align="left")
+axDots = gcurve(color=color.blue, graph=g3, legend = True, label = "X Acceleration")
+ayDots = gcurve(color=color.red, graph=g3, legend = True, label="Y Acceleration")
+
+
+g4 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Buoyant Force"), align="left")
+bfDots = gcurve(color=color.blue, graph=g4, legend = True, label = "Buoyant Force")
+
+g5 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Drag Force"), align="left")
+dxDots = gcurve(color=color.cyan, graph=g5, legend = True, label = "X-Drag")
+dyDots = gcurve(color=color.green, graph=g5, legend = True, label = "Y-Drag")
 
 
 ball = sphere(
@@ -330,10 +372,7 @@ while True:
         yy = fluid_y - fluid_height / 2 + ball_radius
         vy = 0
 
-    if not started and t == 0:
-        ball.pos = vector(0, height_slider.value, 0)
-        yy = height_slider.value
-    elif started:
+    if started:
         gravity_force = -ball_mass * G
         height_submerged = 0
         if yy - ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
@@ -386,6 +425,14 @@ while True:
         xxDots.plot(t, xx)
         vyDots.plot(t, vy)
         vxDots.plot(t, vx)
+
+        axDots.plot(t, ax)
+        ayDots.plot(t, ay)
+
+        dxDots.plot(t, resistive_force_x)
+        dyDots.plot(t, resistive_force_y)
+
+        bfDots.plot(t, buoyant_force)
 
         t = t + dt
 
