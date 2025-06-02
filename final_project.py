@@ -35,11 +35,11 @@ fluid_z = 0
 # properties of object
 cd = 0.47  # drag coefficient
 ball_radius = 0.05  # radius of the ball (meters), should be ball_radius_init
-m = (0.91 * (1e2**3) / 1e3) * (
+ball_mass = (0.91 * (1e2**3) / 1e3) * (
     4 * pi * (ball_radius**3) / 3
 )  # mass of the ball, default to rubber density
 h = 0  # height submerged
-V = 0  # for volume displaced
+Volume_Displaced = 0  # for volume displaced
 
 
 # START/PAUSE/PLAY BUTTON
@@ -51,6 +51,7 @@ start_button, pause_play_button = None, None
 def start(evt):
     global started, start_button, pause_play_button, height_slider, start_button, vx_slider, t
     global styrofoam_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button
+    global density_slider
     started = True
     t = 0
     # removing presetting stuff
@@ -59,13 +60,12 @@ def start(evt):
     pause_play_button.disabled = False
     reset_button.disabled = False
     vx_slider.disabled = True
-    
+
     styrofoam_ball_button.disabled = True
     rubber_ball_button.disabled = True
     metal_ball_button.disabled = True
     ice_ball_button.disabled = True
-
-
+    density_slider.disabled = True
     return evt
 
 
@@ -85,7 +85,7 @@ def toggle(evt):
 def reset(evt):
     global yy, vy, vx, start_button, vx_slider
     global pause_play_button, height_slider, started, t, g1, g2, vyDots, yyDots, height_slider, xx, vx
-    global rubber_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button
+    global rubber_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button, density_slider
     yy = height_slider.value
     t = 0
     vy = 0
@@ -99,11 +99,23 @@ def reset(evt):
     vx_slider.disabled = False
     reset_button.disabled = True
 
-    rubber_ball_button.disabled = False
-    metal_ball_button.disabled = False
-    rubber_ball_button.disabled = False
-    styrofoam_ball_button.disabled = False
-    ice_ball_button.disabled = False
+    density_slider.disabled = False
+
+    density = (ball_mass / ((4 / 3) * pi * (ball_radius**3))) 
+    if density != RUBBER_DENSITY:
+        rubber_ball_button.disabled = False
+
+    if density != STEEL_DENSITY:
+        metal_ball_button.disabled = False
+
+    if density != RUBBER_DENSITY:
+        rubber_ball_button.disabled = False
+
+    if density != STYROFOAM_DENSITY:
+        styrofoam_ball_button.disabled = False
+
+    if density != ICE_DENSITY:
+        ice_ball_button.disabled = False
 
     # clear graphs
     vyDots.delete()
@@ -135,43 +147,101 @@ STYROFOAM_DENSITY = 0.05 * (1e2**3) / 1e3
 STEEL_DENSITY = 7.85 * (1e2**3) / 1e3
 
 
-
 def change_to_rubber_density(evt):
-    global m, ball_radius
+    global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
+    global density_slider, density_slider_text
+    density_slider.value = RUBBER_DENSITY
+    density_slider_text.text = f"Density: {RUBBER_DENSITY} (kg / m^3)"
+    rubber_ball_button.disabled = True
+    metal_ball_button.disabled = False
+    styrofoam_ball_button.disabled = False
+    ice_ball_button.disabled = False
     volume = 4 * pi * (ball_radius**3) / 3
-    m = RUBBER_DENSITY * volume
+    ball_mass = RUBBER_DENSITY * volume
     return evt
 
 
 def change_to_metal_density(evt):
-    global m, ball_radius
+    global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
+    global density_slider, density_slider_text
+    density_slider.value = STEEL_DENSITY
+    density_slider_text.text = f"Density: {STEEL_DENSITY} (kg / m^3)"
+    rubber_ball_button.disabled = False
+    metal_ball_button.disabled = True
+    styrofoam_ball_button.disabled = False
+    ice_ball_button.disabled = False
     volume = 4 * pi * (ball_radius**3) / 3
-    m = STEEL_DENSITY * volume
+    ball_mass = STEEL_DENSITY * volume
     return evt
 
 
 def change_to_styrofoam_density(evt):
-    global m, ball_radius
+    global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
+    global density_slider, density_slider_text
+    density_slider.value = STYROFOAM_DENSITY
+    density_slider_text.text = f"Density: {STYROFOAM_DENSITY} (kg / m^3)"
+    rubber_ball_button.disabled = False
+    metal_ball_button.disabled = False
+    styrofoam_ball_button.disabled = True
+    ice_ball_button.disabled = False
     volume = 4 * pi * (ball_radius**3) / 3
-    m = STYROFOAM_DENSITY * volume
+    ball_mass = ICE_DENSITY * volume
     return evt
 
 
 def change_to_ice_density(evt):
-    global m, ball_radius
+    global ball_mass, ball_radius, rubber_ball_button, metal_ball_button, styrofoam_ball_button, ice_ball_button
+    global density_slider, density_slider_text
+    density_slider.value = ICE_DENSITY
+    density_slider_text.text = f"Density: {ICE_DENSITY} (kg / m^3)"
     volume = 4 * pi * (ball_radius**3) / 3
-    m = ICE_DENSITY * volume
+    ball_mass = ICE_DENSITY * volume
     return evt
 
-scene.append_to_caption("\nDensity Presets \n")
+
+scene.append_to_caption("\n Updating Density \n")
+
 rubber_ball_button = button(bind=change_to_rubber_density, text="Rubber Density")
 metal_ball_button = button(bind=change_to_metal_density, text="Metal Density")
 styrofoam_ball_button = button(
     bind=change_to_styrofoam_density, text="Styrofoam Density"
 )
-ice_ball_button = button(
-    bind=change_to_ice_density, text="Ice Density"
-)
+
+ice_ball_button = button(bind=change_to_ice_density, text="Ice Density", disabled=True)
+
+
+def change_density(evt):
+    global density_slider, density_slider_text, ball_mass, rubber_ball_button, metal_ball_button
+    global styrofoam_ball_button, ice_ball_button
+
+    # if the slider is used, reenable buttons that don't equal slider value
+    density_slider.value = evt.value
+    density_slider_text.text = f"Density: {density_slider.value} (kg / m^3)"
+    if density_slider.value != ICE_DENSITY:
+        ice_ball_button.disabled = False
+    else:
+        ice_ball_button.disabled = True
+
+    if density_slider.value != STYROFOAM_DENSITY:
+        styrofoam_ball_button.disabled = False
+    else:
+        styrofoam_ball_button.disabled = True
+
+    if density_slider.value != ICE_DENSITY:
+        ice_ball_button.disabled = False
+    else:
+        ice_ball_button.disabled = True
+
+    if density_slider.value != RUBBER_DENSITY:
+        rubber_ball_button.disabled = False
+    else:
+        rubber_ball_button.disabled = True
+
+scene.append_to_caption("\n Manually Change Density\n")
+density_slider = slider(bind=change_density, min=0, max=10000, value=ICE_DENSITY)
+density_slider_text = wtext(text=f"Density: {ICE_DENSITY} (kg / m^3)")
+
+scene.append_to_caption("\n")
 
 # INITIAL HEIGHT + POSITION
 
@@ -183,8 +253,6 @@ scene.camera.pos = vector(
 
 
 yy = y_init
-pos_text = None
-height_slider = None
 
 
 def change_initial_height(evt):
@@ -217,16 +285,16 @@ vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
 
 # ball_radius = ball_radius_init # change ball_radius variable above to ball_radius_init
 
-#def change_radius(evt):
+# def change_radius(evt):
 #    global r_slider, r_slider_text, ball_radius, ball_radius_init
 #    r_slider.value = evt.value
 #    ball_radius = r_slider.value
 #    r_slider_text.text = f"Radius: {r_slider.value}"
 #    return evt
 
-#scene.append_to_caption("\nChange Radius\n")
-#r_slider = slider(bind = change_radius, min = 0, max = 2, value = ball_radius)
-#r_slider_text = wtext(text=f"Radius: {ball_radius}")
+# scene.append_to_caption("\nChange Radius\n")
+# r_slider = slider(bind = change_radius, min = 0, max = 2, value = ball_radius)
+# r_slider_text = wtext(text=f"Radius: {ball_radius}")
 
 
 scene.append_to_caption("\n\n Graphs\n")
@@ -260,11 +328,8 @@ while True:
     if not started and t == 0:
         ball.pos = vector(0, height_slider.value, 0)
         yy = height_slider.value
-    #elif not started:
-      #  ...
-    else:
-        gravity_force = -m * G
-
+    elif started:
+        gravity_force = -ball_mass * G
         height_submerged = 0
         if yy - ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
             # the ball is above the water
@@ -286,13 +351,16 @@ while True:
             * (height_submerged**2)
             * (3 * ball_radius - height_submerged)
         )
-        
+
         difference = ball_radius - height_submerged
-        
-        resistive_force_y = (1 / 2) * cd * P * (vy ** 2) * sqrt((((ball_radius ** 2) - (difference ** 2))))
-       
-        resistive_force_x = (1 / 2) * cd * P * (vx ** 2) * sqrt((((ball_radius ** 2) - (difference ** 2))))
-        
+
+        resistive_force_y = (
+            (1 / 2) * cd * P * (vy**2) * sqrt((((ball_radius**2) - (difference**2))))
+        )
+
+        resistive_force_x = (
+            (1 / 2) * cd * P * (vx**2) * sqrt((((ball_radius**2) - (difference**2))))
+        )
 
         if vy > 0:
             resistive_force_y *= -1
@@ -300,12 +368,12 @@ while True:
             resistive_force_x *= -1
 
         fy = gravity_force + buoyant_force + resistive_force_y
-        ay = fy / m  # calculating the acceleration of gravity
+        ay = fy / ball_mass  # calculating the acceleration of gravity
         vy = vy + ay * dt  # calculating the gradient of velocity
         yy = yy + vy * dt  # calculating the change in position
 
         fx = resistive_force_x
-        ax = fx / m  # calculating the x-component acceleration
+        ax = fx / ball_mass  # calculating the x-component acceleration
         vx = vx + ax * dt  # calculating the x-component velocity
         xx = xx + vx * dt  # calculating the x-component position
 
