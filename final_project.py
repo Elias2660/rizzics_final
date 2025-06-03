@@ -21,7 +21,8 @@ scene.title = "Fluid Simulation"
 
 # fluid properties
 # kg / m^3
-P = 997  # for density of fluid
+WATER_DENSITY = 997
+fluid_density = WATER_DENSITY  # for density of fluid
 
 # fluid box properties
 fluid_length = 50
@@ -332,6 +333,80 @@ scene.append_to_caption("\nChange Radius\n")
 r_slider = slider(bind = change_radius, min = 0, max = 2, value = ball_radius)
 r_slider_text = wtext(text=f"Radius: {ball_radius}")
 
+#Density constants
+BLOOD_DENSITY = 1060 # https://hypertextbook.com/facts/2004/MichaelShmukler.shtml
+MERCURY_DENSITY = 13600 # https://hypertextbook.com/facts/2004/MichaelShmukler.shtml
+HONEY_DENSITY = 1420 # Source: trust me bro
+CRUDE_DENSITY = 825 # Source: trust me bro
+
+
+def switch_to_blood_density(evt):
+    global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
+    global fluid_density_slider, fluid_density_slider_text
+    global fluid_density, fluid
+
+    fluid_density = BLOOD_DENSITY
+    
+
+    return evt
+
+def switch_to_water_density(evt):
+    global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
+    global fluid_density_slider, fluid_density_slider_text
+    global fluid_density, fluid
+
+    fluid_density = WATER_DENSITY
+
+    return evt
+
+def switch_to_mercury_density(evt):
+    global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
+    global fluid_density_slider, fluid_density_slider_text
+    global fluid_density, fluid
+
+    fluid_density = MERCURY_DENSITY
+
+    return evt
+
+def switch_to_honey_density(evt):
+    global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
+    global fluid_density_slider, fluid_density_slider_text
+    global fluid_density, fluid
+
+    fluid_density = HONEY_DENSITY
+
+    return evt
+
+def switch_to_crude_density(evt):
+    global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
+    global fluid_density_slider, fluid_density_slider_text
+    global fluid_density, fluid
+
+    fluid_density = CRUDE_DENSITY
+
+    return evt
+
+def change_fluid_density(evt):
+    global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
+    global fluid_density_slider, fluid_density_slider_text
+    global fluid_density, fluid
+
+    fluid_density = evt.value
+
+    return evt
+
+scene.append_to_caption("\n Fluid Density \n ") 
+
+blood_density_button = button(bind=switch_to_blood_density, text="Blood Density", disabled=False)
+water_density_button = button(bind=switch_to_water_density, text="Water Density", disabled=True)
+mercury_density_button = button(bind=switch_to_mercury_density, text="Mercury Density", disabled=False)
+honey_density_button = button(bind=switch_to_honey_density, text="Honey Density", disabled=False)
+crude_density_button = button(bind=switch_to_crude_density, text="Crude Density", disabled=False)
+
+scene.append_to_caption("\nChange Radius\n")
+fluid_density_slider = slider(bind = change_fluid_density, min = 0, max = 2, value = ball_radius)
+fluid_density_slider_text = wtext(text=f"Fluid Density: {ball_radius}")
+
 
 scene.append_to_caption("\n\n\n\n Graphs\n\n\n")
 
@@ -361,7 +436,7 @@ ball = sphere(
     pos=vector(0, y_init, 0), radius=ball_radius, color=color.red
 )
 
-water = box(
+fluid = box(
     pos=vector(fluid_x, fluid_y, fluid_z),
     size=vector(fluid_length, fluid_height, fluid_width),
     color=vector(0, 0, 1),
@@ -394,18 +469,18 @@ while True:
         buoyant_force = (
             (1 / 3)
             * pi
-            * P
+            * fluid_density
             * G
             * (height_submerged**2)
             * (3 * ball_radius - height_submerged)
         )
 
         resistive_force_y = (
-            (1 / 2) * cd * P * (vy**2) * 2 * pi * ball_radius * height_submerged
+            (1 / 2) * cd * fluid_density * (vy**2) * 2 * pi * ball_radius * height_submerged
         )
 
         resistive_force_x = (
-            (1 / 2) * cd * P * (vx**2) * 2 * pi * ball_radius * height_submerged
+            (1 / 2) * cd * fluid_density * (vx**2) * 2 * pi * ball_radius * height_submerged
         )
 
         if vy > 0:
