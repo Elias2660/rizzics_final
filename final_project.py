@@ -10,7 +10,6 @@ xx = 0
 
 # world properties
 G = 9.81  # for gravity
-BALL_SCALING_FACTOR = 5
 started = False
 scene.width = 400
 scene.range = 1.3
@@ -25,9 +24,9 @@ scene.title = "Fluid Simulation"
 P = 997  # for density of fluid
 
 # fluid box properties
-fluid_length = 8
-fluid_height = 10
-fluid_width = 2
+fluid_length = 50
+fluid_height = 8
+fluid_width = 6
 fluid_x = 0
 fluid_y = -4
 fluid_z = 0
@@ -320,10 +319,12 @@ vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
 
 
 def change_radius(evt):
-    global r_slider, r_slider_text, ball_radius, ball_radius_init, ball
+    global r_slider, r_slider_text, ball_radius, ball_radius_init, ball, ball_mass
+    density = ball_mass / ((4 / 3) * pi * (ball_radius ** 3))
     r_slider.value = evt.value
     ball_radius = r_slider.value
-    ball.radius = ball_radius * BALL_SCALING_FACTOR
+    ball.radius = ball_radius 
+    ball_mass = density * ((4 / 3) * pi * (ball_radius ** 3))
     r_slider_text.text = f"Radius: {r_slider.value}"
     return evt
 
@@ -357,7 +358,7 @@ dyDots = gcurve(color=color.green, graph=g5, legend = True, label = "Y-Drag")
 
 
 ball = sphere(
-    pos=vector(0, y_init, 0), radius=ball_radius * BALL_SCALING_FACTOR, color=color.red
+    pos=vector(0, y_init, 0), radius=ball_radius, color=color.red
 )
 
 water = box(
@@ -399,14 +400,12 @@ while True:
             * (3 * ball_radius - height_submerged)
         )
 
-        difference = ball_radius - height_submerged
-
         resistive_force_y = (
-            (1 / 2) * cd * P * (vy**2) * sqrt((((ball_radius**2) - (difference**2))))
+            (1 / 2) * cd * P * (vy**2) * 2 * pi * ball_radius * height_submerged
         )
 
         resistive_force_x = (
-            (1 / 2) * cd * P * (vx**2) * sqrt((((ball_radius**2) - (difference**2))))
+            (1 / 2) * cd * P * (vx**2) * 2 * pi * ball_radius * height_submerged
         )
 
         if vy > 0:
