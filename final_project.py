@@ -347,6 +347,9 @@ def switch_to_blood_density(evt):
 
     fluid_density = BLOOD_DENSITY
     
+    fluid_density_slider.value = fluid_density
+    fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+
 
     return evt
 
@@ -357,6 +360,15 @@ def switch_to_water_density(evt):
 
     fluid_density = WATER_DENSITY
 
+    water_density_button.disabled = True
+    blood_density_button.disabled = False
+    honey_density_button.disabled = False
+    crude_density_button.disabled = False
+    mercury_density_button.disabled = False
+
+    fluid_density_slider.value = fluid_density
+    fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+
     return evt
 
 def switch_to_mercury_density(evt):
@@ -365,6 +377,16 @@ def switch_to_mercury_density(evt):
     global fluid_density, fluid
 
     fluid_density = MERCURY_DENSITY
+
+
+    water_density_button.disabled = False
+    blood_density_button.disabled = False
+    honey_density_button.disabled = False
+    crude_density_button.disabled = False
+    mercury_density_button.disabled = True
+    
+    fluid_density_slider.value = fluid_density
+    fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
     return evt
 
@@ -375,6 +397,16 @@ def switch_to_honey_density(evt):
 
     fluid_density = HONEY_DENSITY
 
+
+    water_density_button.disabled = False
+    blood_density_button.disabled = False
+    honey_density_button.disabled = True
+    crude_density_button.disabled = False
+    mercury_density_button.disabled = False
+    
+    fluid_density_slider.value = fluid_density
+    fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+
     return evt
 
 def switch_to_crude_density(evt):
@@ -384,6 +416,16 @@ def switch_to_crude_density(evt):
 
     fluid_density = CRUDE_DENSITY
 
+
+    water_density_button.disabled = False
+    blood_density_button.disabled = False
+    honey_density_button.disabled = False
+    crude_density_button.disabled = True
+    mercury_density_button.disabled = False
+    
+    fluid_density_slider.value = fluid_density
+    fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+
     return evt
 
 def change_fluid_density(evt):
@@ -392,6 +434,35 @@ def change_fluid_density(evt):
     global fluid_density, fluid
 
     fluid_density = evt.value
+
+    if (fluid_density != WATER_DENSITY):
+        water_density_button.disabled = False
+    else:
+        water_density_button.disabled = True
+
+    if (fluid_density != BLOOD_DENSITY):
+        blood_density_button.disabled = False
+    else:
+        blood_density_button.disabled = True
+
+    if (fluid_density != HONEY_DENSITY):
+        honey_density_button.disabled = False
+    else:
+        honey_density_button.disabled = True
+
+    if (fluid_density != CRUDE_DENSITY):
+        crude_density_button.disabled = False
+    else:
+        crude_density_button.disabled = True
+
+    if (fluid_density != MERCURY_DENSITY):
+        mercury_density_button.disabled = False
+    else:
+        mercury_density_button.disabled = True
+
+    
+    fluid_density_slider.value = fluid_density
+    fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
     return evt
 
@@ -403,9 +474,9 @@ mercury_density_button = button(bind=switch_to_mercury_density, text="Mercury De
 honey_density_button = button(bind=switch_to_honey_density, text="Honey Density", disabled=False)
 crude_density_button = button(bind=switch_to_crude_density, text="Crude Density", disabled=False)
 
-scene.append_to_caption("\nChange Radius\n")
-fluid_density_slider = slider(bind = change_fluid_density, min = 0, max = 2, value = ball_radius)
-fluid_density_slider_text = wtext(text=f"Fluid Density: {ball_radius}")
+scene.append_to_caption("\nChange Fluid Density\n")
+fluid_density_slider = slider(bind = change_fluid_density, min = 0, max = 20000, value = fluid_density)
+fluid_density_slider_text = wtext(text=f"Fluid Density: {fluid_density} (kg/m^3)")
 
 
 scene.append_to_caption("\n\n\n\n Graphs\n\n\n")
