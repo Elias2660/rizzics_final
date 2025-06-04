@@ -35,7 +35,7 @@ fluid_z = 0
 # properties of object
 cd = 0.47  # drag coefficient
 ball_radius_init = 0.1  # radius of the ball (meters), should be ball_radius_init
-ball_radius = ball_radius_init # change ball_radius variable above to ball_radius_init
+ball_radius = ball_radius_init  # change ball_radius variable above to ball_radius_init
 
 ball_mass = (0.91 * (1e2**3) / 1e3) * (
     4 * pi * (ball_radius**3) / 3
@@ -129,7 +129,7 @@ def reset(evt):
     # update fluid density buttons
     if fluid_density != WATER_DENSITY:
         water_density_button.disabled = False
-    
+
     if fluid_density != HONEY_DENSITY:
         honey_density_button.disabled = False
 
@@ -138,7 +138,7 @@ def reset(evt):
 
     if fluid_density != MERCURY_DENSITY:
         mercury_density_button.disabled = False
-    
+
     if fluid_density != BLOOD_DENSITY:
         blood_density_button.disabled = False
 
@@ -147,7 +147,7 @@ def reset(evt):
     # update buttons regarding density
     density_slider.disabled = False
 
-    density = (ball_mass / ((4 / 3) * pi * (ball_radius**3))) 
+    density = ball_mass / ((4 / 3) * pi * (ball_radius**3))
     if density != RUBBER_DENSITY:
         rubber_ball_button.disabled = False
 
@@ -264,12 +264,11 @@ def change_to_ice_density(evt):
     metal_ball_button.disabled = False
     styrofoam_ball_button.disabled = False
     ice_ball_button.disabled = True
-    
+
     # actually update mass
     volume = 4 * pi * (ball_radius**3) / 3
     ball_mass = ICE_DENSITY * volume
     return evt
-
 
 
 scene.append_to_caption("\n Updating Density \n")
@@ -290,7 +289,7 @@ def change_density(evt):
     # if the slider is used, reenable buttons that don't equal slider value
     density_slider.value = evt.value
     density_slider_text.text = f"Density: {density_slider.value} (kg / m^3)"
-    ball_mass = evt.value *  4 * pi * (ball_radius**3) / 3
+    ball_mass = evt.value * 4 * pi * (ball_radius**3) / 3
 
     #  update buttons so stuff doesn't become too confusing
     if density_slider.value != ICE_DENSITY:
@@ -312,6 +311,7 @@ def change_density(evt):
         rubber_ball_button.disabled = False
     else:
         rubber_ball_button.disabled = True
+
 
 scene.append_to_caption("\n Manually Change Density\n")
 density_slider = slider(bind=change_density, min=0, max=10000, value=ICE_DENSITY)
@@ -363,23 +363,24 @@ vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
 
 def change_radius(evt):
     global r_slider, r_slider_text, ball_radius, ball_radius_init, ball, ball_mass
-    density = ball_mass / ((4 / 3) * pi * (ball_radius ** 3))
+    density = ball_mass / ((4 / 3) * pi * (ball_radius**3))
     r_slider.value = evt.value
     ball_radius = r_slider.value
-    ball.radius = ball_radius 
-    ball_mass = density * ((4 / 3) * pi * (ball_radius ** 3))
+    ball.radius = ball_radius
+    ball_mass = density * ((4 / 3) * pi * (ball_radius**3))
     r_slider_text.text = f"Radius: {r_slider.value}"
     return evt
 
+
 scene.append_to_caption("\nChange Radius\n")
-r_slider = slider(bind = change_radius, min = 0, max = 2, value = ball_radius)
+r_slider = slider(bind=change_radius, min=0, max=2, value=ball_radius)
 r_slider_text = wtext(text=f"Radius: {ball_radius}")
 
-#Density constants
-BLOOD_DENSITY = 1060 # https://hypertextbook.com/facts/2004/MichaelShmukler.shtml
-MERCURY_DENSITY = 13600 # https://hypertextbook.com/facts/2004/MichaelShmukler.shtml
-HONEY_DENSITY = 1420 # Source: trust me bro
-CRUDE_DENSITY = 825 # Source: trust me bro
+# Density constants
+BLOOD_DENSITY = 1060  # https://hypertextbook.com/facts/2004/MichaelShmukler.shtml
+MERCURY_DENSITY = 13600  # https://hypertextbook.com/facts/2004/MichaelShmukler.shtml
+HONEY_DENSITY = 1420  # Source: trust me bro
+CRUDE_DENSITY = 825  # Source: trust me bro
 
 
 def switch_to_blood_density(evt):
@@ -388,12 +389,12 @@ def switch_to_blood_density(evt):
     global fluid_density, fluid
 
     fluid_density = BLOOD_DENSITY
-    
+
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
-
     return evt
+
 
 def switch_to_water_density(evt):
     global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
@@ -413,6 +414,7 @@ def switch_to_water_density(evt):
 
     return evt
 
+
 def switch_to_mercury_density(evt):
     global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
     global fluid_density_slider, fluid_density_slider_text
@@ -420,17 +422,17 @@ def switch_to_mercury_density(evt):
 
     fluid_density = MERCURY_DENSITY
 
-
     water_density_button.disabled = False
     blood_density_button.disabled = False
     honey_density_button.disabled = False
     crude_density_button.disabled = False
     mercury_density_button.disabled = True
-    
+
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
     return evt
+
 
 def switch_to_honey_density(evt):
     global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
@@ -439,17 +441,17 @@ def switch_to_honey_density(evt):
 
     fluid_density = HONEY_DENSITY
 
-
     water_density_button.disabled = False
     blood_density_button.disabled = False
     honey_density_button.disabled = True
     crude_density_button.disabled = False
     mercury_density_button.disabled = False
-    
+
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
     return evt
+
 
 def switch_to_crude_density(evt):
     global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
@@ -458,17 +460,17 @@ def switch_to_crude_density(evt):
 
     fluid_density = CRUDE_DENSITY
 
-
     water_density_button.disabled = False
     blood_density_button.disabled = False
     honey_density_button.disabled = False
     crude_density_button.disabled = True
     mercury_density_button.disabled = False
-    
+
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
     return evt
+
 
 def change_fluid_density(evt):
     global blood_density_button, water_density_button, mercury_density_button, honey_density_button, crude_density_button
@@ -477,77 +479,91 @@ def change_fluid_density(evt):
 
     fluid_density = evt.value
 
-    if (fluid_density != WATER_DENSITY):
+    if fluid_density != WATER_DENSITY:
         water_density_button.disabled = False
     else:
         water_density_button.disabled = True
 
-    if (fluid_density != BLOOD_DENSITY):
+    if fluid_density != BLOOD_DENSITY:
         blood_density_button.disabled = False
     else:
         blood_density_button.disabled = True
 
-    if (fluid_density != HONEY_DENSITY):
+    if fluid_density != HONEY_DENSITY:
         honey_density_button.disabled = False
     else:
         honey_density_button.disabled = True
 
-    if (fluid_density != CRUDE_DENSITY):
+    if fluid_density != CRUDE_DENSITY:
         crude_density_button.disabled = False
     else:
         crude_density_button.disabled = True
 
-    if (fluid_density != MERCURY_DENSITY):
+    if fluid_density != MERCURY_DENSITY:
         mercury_density_button.disabled = False
     else:
         mercury_density_button.disabled = True
 
-    
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
     return evt
 
-scene.append_to_caption("\n Fluid Density \n ") 
 
-blood_density_button = button(bind=switch_to_blood_density, text="Blood Density", disabled=False)
-water_density_button = button(bind=switch_to_water_density, text="Water Density", disabled=True)
-mercury_density_button = button(bind=switch_to_mercury_density, text="Mercury Density", disabled=False)
-honey_density_button = button(bind=switch_to_honey_density, text="Honey Density", disabled=False)
-crude_density_button = button(bind=switch_to_crude_density, text="Crude Density", disabled=False)
+scene.append_to_caption("\n Fluid Density \n ")
+
+blood_density_button = button(
+    bind=switch_to_blood_density, text="Blood Density", disabled=False
+)
+water_density_button = button(
+    bind=switch_to_water_density, text="Water Density", disabled=True
+)
+mercury_density_button = button(
+    bind=switch_to_mercury_density, text="Mercury Density", disabled=False
+)
+honey_density_button = button(
+    bind=switch_to_honey_density, text="Honey Density", disabled=False
+)
+crude_density_button = button(
+    bind=switch_to_crude_density, text="Crude Density", disabled=False
+)
 
 scene.append_to_caption("\nChange Fluid Density\n")
-fluid_density_slider = slider(bind = change_fluid_density, min = 0, max = 20000, value = fluid_density)
+fluid_density_slider = slider(
+    bind=change_fluid_density, min=0, max=20000, value=fluid_density
+)
 fluid_density_slider_text = wtext(text=f"Fluid Density: {fluid_density} (kg/m^3)")
 
 
 scene.append_to_caption("\n\n\n\n Graphs\n\n\n")
 
 g1 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Position"), align="left")
-xxDots = gcurve(color=color.magenta, graph=g1, label = "X Position")
+xxDots = gcurve(color=color.magenta, graph=g1, label="X Position")
 yyDots = gcurve(color=color.green, graph=g1, label="Y Position")
 
 
 g2 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Velocity"), align="left")
-vxDots = gcurve(color=color.blue, graph=g2, legend = True, label = "X Velocity")
-vyDots = gcurve(color=color.red, graph=g2, legend = True, label="Y Velocity")
+vxDots = gcurve(color=color.blue, graph=g2, legend=True, label="X Velocity")
+vyDots = gcurve(color=color.red, graph=g2, legend=True, label="Y Velocity")
 
-g3 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Acceleration"), align="left")
-axDots = gcurve(color=color.blue, graph=g3, legend = True, label = "X Acceleration")
-ayDots = gcurve(color=color.red, graph=g3, legend = True, label="Y Acceleration")
+g3 = graph(
+    width=350, height=250, xtitle=("Time"), ytitle=("Acceleration"), align="left"
+)
+axDots = gcurve(color=color.blue, graph=g3, legend=True, label="X Acceleration")
+ayDots = gcurve(color=color.red, graph=g3, legend=True, label="Y Acceleration")
 
 
-g4 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Buoyant Force"), align="left")
-bfDots = gcurve(color=color.blue, graph=g4, legend = True, label = "Buoyant Force")
+g4 = graph(
+    width=350, height=250, xtitle=("Time"), ytitle=("Buoyant Force"), align="left"
+)
+bfDots = gcurve(color=color.blue, graph=g4, legend=True, label="Buoyant Force")
 
 g5 = graph(width=350, height=250, xtitle=("Time"), ytitle=("Drag Force"), align="left")
-dxDots = gcurve(color=color.cyan, graph=g5, legend = True, label = "X-Drag")
-dyDots = gcurve(color=color.green, graph=g5, legend = True, label = "Y-Drag")
+dxDots = gcurve(color=color.cyan, graph=g5, legend=True, label="X-Drag")
+dyDots = gcurve(color=color.green, graph=g5, legend=True, label="Y-Drag")
 
 
-ball = sphere(
-    pos=vector(0, y_init, 0), radius=ball_radius, color=color.red
-)
+ball = sphere(pos=vector(0, y_init, 0), radius=ball_radius, color=color.red)
 
 fluid = box(
     pos=vector(fluid_x, fluid_y, fluid_z),
@@ -589,11 +605,25 @@ while True:
         )
 
         resistive_force_y = (
-            (1 / 2) * cd * fluid_density * (vy**2) * 2 * pi * ball_radius * height_submerged
+            (1 / 2)
+            * cd
+            * fluid_density
+            * (vy**2)
+            * 2
+            * pi
+            * ball_radius
+            * height_submerged
         )
 
         resistive_force_x = (
-            (1 / 2) * cd * fluid_density * (vx**2) * 2 * pi * ball_radius * height_submerged
+            (1 / 2)
+            * cd
+            * fluid_density
+            * (vx**2)
+            * 2
+            * pi
+            * ball_radius
+            * height_submerged
         )
 
         if vy > 0:
