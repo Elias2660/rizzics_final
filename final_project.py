@@ -11,7 +11,7 @@ xx = 0
 # world properties
 G = 9.81  # for gravity
 started = False
-scene.width = 400
+scene.width = 600
 scene.range = 1.3
 scene.height = 800
 scene.align = "left"
@@ -34,7 +34,7 @@ fluid_z = 0
 
 # properties of object
 cd = 0.47  # drag coefficient
-ball_radius_init = 0.05  # radius of the ball (meters), should be ball_radius_init
+ball_radius_init = 0.1  # radius of the ball (meters), should be ball_radius_init
 ball_radius = ball_radius_init # change ball_radius variable above to ball_radius_init
 
 ball_mass = (0.91 * (1e2**3) / 1e3) * (
@@ -54,6 +54,10 @@ def start(evt):
     global started, start_button, pause_play_button, height_slider, start_button, vx_slider, t
     global styrofoam_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button
     global density_slider
+    global r_slider
+    global fluid_density
+    global fluid_density_slider, blood_density_button, mercury_density_button, water_density_button, honey_density_button, crude_density_button
+
     started = True
     t = 0
     # removing presetting stuff
@@ -63,11 +67,25 @@ def start(evt):
     reset_button.disabled = False
     vx_slider.disabled = True
 
+    # density stuff
     styrofoam_ball_button.disabled = True
     rubber_ball_button.disabled = True
     metal_ball_button.disabled = True
     ice_ball_button.disabled = True
     density_slider.disabled = True
+
+    # radius stuff
+    r_slider.disabled = True
+
+    # fluid density stuff
+    blood_density_button.disabled = True
+    mercury_density_button.disabled = True
+    water_density_button.disabled = True
+    honey_density_button.disabled = True
+    crude_density_button.disabled = True
+
+    fluid_density_slider.disabled = True
+
     return evt
 
 
@@ -89,7 +107,9 @@ def reset(evt):
     global pause_play_button, height_slider, started, t, height_slider, xx, vx
     global rubber_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button, density_slider
     global vyDots, yyDots, vxDots, xxDots, axDots, ayDots, bfDots, dxDots, dyDots
-    global r_slider, fluid_density_slider, blood_density_button, mercury_density_button, 
+    global r_slider
+    global fluid_density
+    global fluid_density_slider, blood_density_button, mercury_density_button, water_density_button, honey_density_button, crude_density_button
     yy = height_slider.value
     t = 0
     vy = 0
@@ -102,6 +122,27 @@ def reset(evt):
     height_slider.disabled = False
     vx_slider.disabled = False
     reset_button.disabled = True
+
+    # update radius measurements
+    r_slider.disabled = False
+
+    # update fluid density buttons
+    if fluid_density != WATER_DENSITY:
+        water_density_button.disabled = False
+    
+    if fluid_density != HONEY_DENSITY:
+        honey_density_button.disabled = False
+
+    if fluid_density != CRUDE_DENSITY:
+        crude_density_button.disabled = False
+
+    if fluid_density != MERCURY_DENSITY:
+        mercury_density_button.disabled = False
+    
+    if fluid_density != BLOOD_DENSITY:
+        blood_density_button.disabled = False
+
+    fluid_density_slider.disabled = False
 
     # update buttons regarding density
     density_slider.disabled = False
