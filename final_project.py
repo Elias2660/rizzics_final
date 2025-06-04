@@ -89,6 +89,7 @@ def reset(evt):
     global pause_play_button, height_slider, started, t, height_slider, xx, vx
     global rubber_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button, density_slider
     global vyDots, yyDots, vxDots, xxDots, axDots, ayDots, bfDots, dxDots, dyDots
+    global r_slider, fluid_density_slider, blood_density_button, mercury_density_button, 
     yy = height_slider.value
     t = 0
     vy = 0
