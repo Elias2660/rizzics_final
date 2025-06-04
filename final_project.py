@@ -360,6 +360,17 @@ scene.append_to_caption("\nChange Initial x Velocity\n")
 vx_slider = slider(bind=change_initial_vx, min=-5, max=5, value=vx_init)
 vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
 
+def change_initial_vy(evt):
+    global vy_slider_text, vy_slider, vy
+    vy_slider = evt.value
+    vy = vy_slider.value
+    vy_slider_text.text = f"Initial Y-Vel: {vy_slider.value}"
+
+
+scene.append_to_caption("\n Change Initial y Velocity \n")
+vy_slider = slider(bind=change_initial_vy, min=-5, max=5, value=vy)
+vy_slider_text = wtext(text=f"Initial Y Velocity: {vy}")
+
 
 def change_radius(evt):
     global r_slider, r_slider_text, ball_radius, ball_radius_init, ball, ball_mass
