@@ -25,12 +25,12 @@ WATER_DENSITY = 997
 fluid_density = WATER_DENSITY  # for density of fluid
 
 # fluid box properties
-fluid_length = 50
-fluid_height = 8
-fluid_width = 6
-fluid_x = 0
-fluid_y = -4
-fluid_z = 0
+FLUID_LENGTH = 50
+FLUID_HEIGHT = 8
+FLUID_WIDTH = 6
+FLUID_X = 0
+FLUID_Y = -4
+FLUID_Z = 0
 
 # properties of object
 cd = 0.47  # drag coefficient
@@ -566,8 +566,8 @@ dyDots = gcurve(color=color.green, graph=g5, legend=True, label="Y-Drag")
 ball = sphere(pos=vector(0, y_init, 0), radius=ball_radius, color=color.red)
 
 fluid = box(
-    pos=vector(fluid_x, fluid_y, fluid_z),
-    size=vector(fluid_length, fluid_height, fluid_width),
+    pos=vector(FLUID_X, FLUID_Y, FLUID_Z),
+    size=vector(FLUID_LENGTH, FLUID_HEIGHT, FLUID_WIDTH),
     color=vector(0, 0, 1),
     opacity=0.5,
 )
@@ -576,19 +576,29 @@ fluid = box(
 while True:
     rate(1 / dt)
 
-    if yy < fluid_y - fluid_height / 2 + ball_radius:
-        yy = fluid_y - fluid_height / 2 + ball_radius
+    # if it hits bottom
+    if yy < FLUID_Y - FLUID_HEIGHT / 2 + ball_radius:
+        yy = FLUID_Y - FLUID_HEIGHT / 2 + ball_radius
         vy = 0
+    
+    # if it hits the right side
+    if xx > FLUID_X + FLUID_LENGTH / 2 - ball_radius:
+        xx = FLUID_X + FLUID_LENGTH / 2 - ball_radius
+        vx = 0
+    # if it hits the left size
+    if xx < FLUID_X - FLUID_LENGTH / 2 + ball_radius:
+        xx = FLUID_X - FLUID_LENGTH / 2 + ball_radius
+        vx = 0
 
     if started:
         gravity_force = -ball_mass * G
         height_submerged = 0
-        if yy - ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
+        if yy - ball_radius >= FLUID_Y + FLUID_HEIGHT / 2 + ball_radius:
             # the ball is above the water
             height_submerged = 0
-        elif yy + ball_radius >= fluid_y + fluid_height / 2 + ball_radius:
+        elif yy + ball_radius >= FLUID_Y + FLUID_HEIGHT / 2 + ball_radius:
             # the ball is somewhat submerged
-            height_submerged = (fluid_y + fluid_height / 2 + ball_radius) - (
+            height_submerged = (FLUID_Y + FLUID_HEIGHT / 2 + ball_radius) - (
                 yy - ball_radius
             )
         else:
@@ -632,6 +642,11 @@ while True:
             resistive_force_x *= -1
 
         fy = gravity_force + buoyant_force + resistive_force_y
+        # as of now, just set force to zero if it hits bottom and is negative
+        # dumb FIXME
+        if yy < FLUID_Y - FLUID_HEIGHT / 2 + ball_radius and fy < 0:
+            fy = 0
+
         ay = fy / ball_mass  # calculating the acceleration of gravity
         vy = vy + ay * dt  # calculating the gradient of velocity
         yy = yy + vy * dt  # calculating the change in position
@@ -640,6 +655,9 @@ while True:
         ax = fx / ball_mass  # calculating the x-component acceleration
         vx = vx + ax * dt  # calculating the x-component velocity
         xx = xx + vx * dt  # calculating the x-component position
+
+        # don't need to add a boundary here causing force to be zero cause 
+        # the only acting force is equal to zero when velocity is zero
 
         yyDots.plot(t, yy)
         xxDots.plot(t, xx)
