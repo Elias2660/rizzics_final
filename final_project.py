@@ -390,8 +390,17 @@ def switch_to_blood_density(evt):
 
     fluid_density = BLOOD_DENSITY
 
+    water_density_button.disabled = False
+    blood_density_button.disabled = True
+    honey_density_button.disabled = False
+    crude_density_button.disabled = False
+    mercury_density_button.disabled = False
+
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+    
+    
+    fluid.color = vector(1,0,0)
 
     return evt
 
@@ -412,6 +421,8 @@ def switch_to_water_density(evt):
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
+    fluid.color = vector(0,0,1)
+
     return evt
 
 
@@ -430,6 +441,8 @@ def switch_to_mercury_density(evt):
 
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+
+    fluid.color = vector(192,192,192)
 
     return evt
 
@@ -450,6 +463,8 @@ def switch_to_honey_density(evt):
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
+    fluid.color = vector(203,142,0)
+
     return evt
 
 
@@ -468,6 +483,8 @@ def switch_to_crude_density(evt):
 
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
+
+    fluid.color = vector(0.4, 0.4, 0.4)
 
     return evt
 
