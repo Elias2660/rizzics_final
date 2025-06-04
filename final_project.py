@@ -55,6 +55,7 @@ def start(evt):
     global styrofoam_ball_button, metal_ball_button, rubber_ball_button, ice_ball_button
     global density_slider
     global r_slider
+    global vy_slider
     global fluid_density
     global fluid_density_slider, blood_density_button, mercury_density_button, water_density_button, honey_density_button, crude_density_button
 
@@ -66,6 +67,7 @@ def start(evt):
     pause_play_button.disabled = False
     reset_button.disabled = False
     vx_slider.disabled = True
+    vy_slider.disabled = True
 
     # density stuff
     styrofoam_ball_button.disabled = True
@@ -109,6 +111,7 @@ def reset(evt):
     global vyDots, yyDots, vxDots, xxDots, axDots, ayDots, bfDots, dxDots, dyDots
     global r_slider
     global fluid_density
+    global vy_slider
     global fluid_density_slider, blood_density_button, mercury_density_button, water_density_button, honey_density_button, crude_density_button
     yy = height_slider.value
     t = 0
@@ -121,6 +124,7 @@ def reset(evt):
     pause_play_button.disabled = True
     height_slider.disabled = False
     vx_slider.disabled = False
+    vy_slider.disabled = False
     reset_button.disabled = True
 
     # update radius measurements
@@ -358,18 +362,17 @@ def change_initial_vx(evt):
 
 scene.append_to_caption("\nChange Initial x Velocity\n")
 vx_slider = slider(bind=change_initial_vx, min=-5, max=5, value=vx_init)
-vx_slider_text = wtext(text=f"Initial X Velocity: {vx_init}")
+vx_slider_text = wtext(text=f"X Velocity: {vx_init}")
 
 def change_initial_vy(evt):
     global vy_slider_text, vy_slider, vy
-    vy_slider = evt.value
+    vy_slider.value = evt.value
     vy = vy_slider.value
-    vy_slider_text.text = f"Initial Y-Vel: {vy_slider.value}"
-
+    vy_slider_text.text = f"Y Velocity: {vy_slider.value}"
 
 scene.append_to_caption("\n Change Initial y Velocity \n")
 vy_slider = slider(bind=change_initial_vy, min=-5, max=5, value=vy)
-vy_slider_text = wtext(text=f"Initial Y Velocity: {vy}")
+vy_slider_text = wtext(text=f"Y Velocity: {vy}")
 
 
 def change_radius(evt):
