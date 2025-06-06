@@ -42,3 +42,4 @@ Instructions:
 Notes:
 - User may need to zoom in/out to view the ball
 - Buttons will become unavailable once clicked on, but will reappear when a different setting is selected
+- The ball will stop once it hits the boundaries of the fluid (farthest left/right and bottom)
