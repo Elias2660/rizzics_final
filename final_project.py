@@ -118,6 +118,7 @@ def reset(evt):
     vy = 0
     xx = 0
     vx = vx_slider.value
+    vy = vy_slider.value
     started = False
     start_button.disabled = False
     pause_play_button.text = "Pause"
@@ -364,11 +365,15 @@ scene.append_to_caption("\nChange Initial x Velocity\n")
 vx_slider = slider(bind=change_initial_vx, min=-5, max=5, value=vx_init)
 vx_slider_text = wtext(text=f"X Velocity: {vx_init}")
 
+vy_init = 0
+vy = vy_init
+
 def change_initial_vy(evt):
     global vy_slider_text, vy_slider, vy
     vy_slider.value = evt.value
     vy = vy_slider.value
     vy_slider_text.text = f"Y Velocity: {vy_slider.value}"
+    return evt
 
 scene.append_to_caption("\n Change Initial y Velocity \n")
 vy_slider = slider(bind=change_initial_vy, min=-5, max=5, value=vy)
