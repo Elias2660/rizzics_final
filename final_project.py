@@ -19,6 +19,7 @@ scene.caption = ""
 
 scene.title = "Fluid Simulation"
 
+
 # fluid properties
 # kg / m^3
 WATER_DENSITY = 997
@@ -185,6 +186,29 @@ start_button = button(bind=start, text="Start Simulation")
 pause_play_button = button(bind=toggle, text="Pause", disabled=True)
 reset_button = button(bind=reset, text="Reset", disabled=True)
 
+scene.append_to_caption("\nChange Camera Focus\n")
+
+
+def change_camera_focus_to_ball(evt):
+    global ball, scene, change_to_wider_scene_button, change_to_camera_focus_button
+    scene.camera.follow(ball)
+    change_to_wider_scene_button.disabled = False
+    change_to_camera_focus_button.disabled = True
+    return evt
+
+
+def change_camera_focus_to_wider_environment(evt):
+    global scene, y_init, change_to_camera_focus_button, change_to_wider_scene_button
+    scene.camera.follow(None)
+    scene.camera.pos = vector(0, y_init / 2, 13)
+    change_to_wider_scene_button.disabled = True
+    change_to_camera_focus_button.disabled = False
+    return evt
+
+
+change_to_camera_focus_button = button(bind=change_camera_focus_to_ball, text="Ball Focus")
+change_to_wider_scene_button = button(bind=change_camera_focus_to_wider_environment, text="Scene Focus", disabled=True)
+
 # BUTTONS FOR CHANGING THE ORIGINAL DENSITY
 
 # UNITS: kg / m^3
@@ -330,7 +354,7 @@ y_init = 2
 
 scene.camera.pos = vector(
     0, y_init / 2, 13
-)  # This tells VPython to view the scene from the position (0,5,10)
+)  # This tells VPython to view the scene from the position (0,y_init,13)
 
 
 yy = y_init
@@ -368,12 +392,14 @@ vx_slider_text = wtext(text=f"X Velocity: {vx_init}")
 vy_init = 0
 vy = vy_init
 
+
 def change_initial_vy(evt):
     global vy_slider_text, vy_slider, vy
     vy_slider.value = evt.value
     vy = vy_slider.value
     vy_slider_text.text = f"Y Velocity: {vy_slider.value}"
     return evt
+
 
 scene.append_to_caption("\n Change Initial y Velocity \n")
 vy_slider = slider(bind=change_initial_vy, min=-5, max=5, value=vy)
@@ -417,9 +443,8 @@ def switch_to_blood_density(evt):
 
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
-    
-    
-    fluid.color = vector(1,0,0)
+
+    fluid.color = vector(1, 0, 0)
 
     return evt
 
@@ -440,7 +465,7 @@ def switch_to_water_density(evt):
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
-    fluid.color = vector(0,0,1)
+    fluid.color = vector(0, 0, 1)
 
     return evt
 
@@ -461,7 +486,7 @@ def switch_to_mercury_density(evt):
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
-    fluid.color = vector(192,192,192)
+    fluid.color = vector(192, 192, 192)
 
     return evt
 
@@ -482,7 +507,7 @@ def switch_to_honey_density(evt):
     fluid_density_slider.value = fluid_density
     fluid_density_slider_text.text = f"Fluid Density {fluid_density} (kg/m^3)"
 
-    fluid.color = vector(203,142,0)
+    fluid.color = vector(203, 142, 0)
 
     return evt
 
@@ -616,7 +641,7 @@ while True:
     if yy < FLUID_Y - FLUID_HEIGHT / 2 + ball_radius:
         yy = FLUID_Y - FLUID_HEIGHT / 2 + ball_radius
         vy = 0
-    
+
     # if it hits the right side
     if xx > FLUID_X + FLUID_LENGTH / 2 - ball_radius:
         xx = FLUID_X + FLUID_LENGTH / 2 - ball_radius
@@ -692,7 +717,7 @@ while True:
         vx = vx + ax * dt  # calculating the x-component velocity
         xx = xx + vx * dt  # calculating the x-component position
 
-        # don't need to add a boundary here causing force to be zero cause 
+        # don't need to add a boundary here causing force to be zero cause
         # the only acting force is equal to zero when velocity is zero
 
         yyDots.plot(t, yy)
