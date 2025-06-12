@@ -1,5 +1,6 @@
 from vpython import *
 
+
 # changing properties
 t = 0.00
 dt = 0.0005
@@ -654,10 +655,10 @@ while True:
     if started:
         gravity_force = -ball_mass * G
         height_submerged = 0
-        if yy - ball_radius >= FLUID_Y + FLUID_HEIGHT / 2 + ball_radius:
+        if yy + ball_radius >= FLUID_Y + FLUID_HEIGHT / 2 + ball_radius:
             # the ball is above the water
             height_submerged = 0
-        elif yy + ball_radius >= FLUID_Y + FLUID_HEIGHT / 2 + ball_radius:
+        elif yy - ball_radius >= FLUID_Y + FLUID_HEIGHT / 2 + ball_radius:
             # the ball is somewhat submerged
             height_submerged = (FLUID_Y + FLUID_HEIGHT / 2 + ball_radius) - (
                 yy - ball_radius
