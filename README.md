@@ -12,6 +12,9 @@ Instructions:
     - Pause: stops the simulation (appears at start or once Play has been clicked)
     - Play: resumes the simulation (appears once Pause has been clicked)
     - Reset: resets simulation to its initial position, keeps previous settings
+- Change Camera Focus (buttons)
+    - Ball Focus: focuses in on the ball as it falls
+    - Scene Focus: focuses out onto the wider environment
 - Updating Density
     - Presets (buttons)
         - Rubber Density: changes density of ball to that of rubber
