@@ -13,7 +13,7 @@ Instructions:
     - Play: resumes the simulation (appears once Pause has been clicked)
     - Reset: resets simulation to its initial position, keeps previous settings
 - Change Camera Focus (buttons)
-    - Ball Focus: focuses in on the ball as it falls
+    - Ball Focus: focuses in on the ball as it falls, zoom in or out with mousepad to adjust perspective
     - Scene Focus: focuses out onto the wider environment
 - Updating Density
     - Presets (buttons)
